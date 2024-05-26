@@ -10,11 +10,11 @@ class MyToDoApp(tk.Tk):
         self.title("MyToDo App")
         self.geometry("400x600")
         style = Style(theme='flatly')
-        style.configure("Custon.TEntry", foreground="gray")
+        style.configure("Custom.TEntry", foreground="gray")
 
         #input box
         self.task_input = ttk.Entry(self, font=(
-            "TkDefaultFont",16), width=30,style="Custon.TEntry")
+            "TkDefaultFont",16), width=30,style="Custom.TEntry")
         self.task_input.pack(pady=10)
 
         #input box placeholder
@@ -60,3 +60,25 @@ class MyToDoApp(tk.Tk):
             self.task_list.itemconfig(tk.END, fg="orange")
             self.task_input.delete(0, tk.END)
             self.save_tasks()
+
+    def mark_done(self):
+        task_index = self.task_list
+        if task_index:
+            self.task_list.itemconfig(task_index, fg="green")
+            self.save_tasks()
+    
+    def delete_task(self):
+        task_index = self.task_list.curselection()
+        if task_index:
+            self.task_list.delete(task_index)
+            self.save_tasks()
+    
+    def clear_placeholder(self, event):
+        if self.task_input.get() == "Enter your to-do here ...":
+            self.task_input.delete(0, tk.END)
+            self.task_input.configure(style="TEntry")
+    
+    def restore_placeholder(self, event):
+        if self.task_input.get() == "":
+            self.task_input.insert(0, "Enter your to-do here ...")
+            self.task_input.configure(style="Custom.TEntry")
