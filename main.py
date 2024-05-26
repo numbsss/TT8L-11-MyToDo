@@ -82,3 +82,26 @@ class MyToDoApp(tk.Tk):
         if self.task_input.get() == "":
             self.task_input.insert(0, "Enter your to-do here ...")
             self.task_input.configure(style="Custom.TEntry")
+    
+    def load_tasks(self):
+        try:
+            with open("tasks.json", "r") as f:
+                      data = json.load(f)
+                      for task in data:
+                          self.task_list.insert(tk.END, task["text"])
+                          self.task_list.itemconfig(tk.END, fg=task["color"])
+        except FileNotFoundError:
+            pass
+
+    def save_tasks(self):
+        data = []
+        for i in range(self.task_list.size()):
+            text = self.task_list.get(i)
+            color = self.task_list.itemcget(i, "fg")
+            data.append({"text": text, "color": color})
+        with open("tasks.json", "w") as f:
+            json.dump(data,f)
+            
+if __name__ == '__main__':
+    app = MyToDoApp()
+    app.mainloop
