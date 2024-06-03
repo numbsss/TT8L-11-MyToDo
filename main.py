@@ -8,7 +8,7 @@ class MyToDoApp(tk.Tk):
         super().__init__()
 
         self.title("MyToDo App")
-        self.geometry("400x400")
+        self.geometry("400x500")
         style = Style(theme="flatly")
         style.configure("Custom.TEntry", foreground="gray")
 
@@ -18,7 +18,7 @@ class MyToDoApp(tk.Tk):
         self.task_input.pack(pady=10)
 
         #input box placeholder
-        self.task_input.insert(0, "Enter your todo here...")
+        self.task_input.insert(0, "Enter your to-do-task here ...")
 
         #event clear placeholder when input clicked
         self.task_input.bind("<FocusIn>", self.clear_placeholder)
@@ -43,6 +43,9 @@ class MyToDoApp(tk.Tk):
         ttk.Button(self, text="View Stats", style="info.TButton",
                    command=self.view_stats).pack(side=tk.BOTTOM, pady=10)
         
+        #menu button
+
+        #
         self.load_tasks()
     
     def view_stats(self):
@@ -55,7 +58,7 @@ class MyToDoApp(tk.Tk):
 
     def add_task(self):
         task = self.task_input.get()
-        if task != "Enter your todo here...":
+        if task != "Enter your to-do-task here ...":
             self.task_list.insert(tk.END, task)
             self.task_list.itemconfig(tk.END, fg="orange")
             self.task_input.delete(0, tk.END)
@@ -74,13 +77,13 @@ class MyToDoApp(tk.Tk):
             self.save_tasks()
     
     def clear_placeholder(self, event):
-        if self.task_input.get() == "Enter your todo here...":
+        if self.task_input.get() == "Enter your to-do-task here ...":
             self.task_input.delete(0, tk.END)
             self.task_input.configure(style="TEntry")
 
     def restore_placeholder(self, event):
         if self.task_input.get() == "":
-            self.task_input.insert(0, "Enter your todo here...")
+            self.task_input.insert(0, "Enter your to-do-task here ...")
             self.task_input.configure(style="Custom.TEntry")
 
     def load_tasks(self):
