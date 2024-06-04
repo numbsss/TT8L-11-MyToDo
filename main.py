@@ -43,11 +43,30 @@ class MyToDoApp(tk.Tk):
         ttk.Button(self, text="View Stats", style="info.TButton",
                    command=self.view_stats).pack(side=tk.BOTTOM, pady=10)
         
-        #menu button
+        #create menu bar
+        menubar = tk.Menu(self)
+        self.config(menu=menubar)
 
-        #
+        #create menu
+        app_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="=", menu=app_menu)
+
+        #menu items
+        app_menu.add_command(label="game1", command=self.game1)
+        app_menu.add_command(label="game2", command=self.game2)
+        app_menu.add_separator()
+        app_menu.add_command(label="Exit", command=self.quit)
+
         self.load_tasks()
     
+    def game1(self):
+        #will be added once game 1 finished
+        pass
+    
+    def game2(self):
+        #will be added once game 2 finished
+        pass
+
     def view_stats(self):
         done_count = 0
         total_count = self.task_list.size()
