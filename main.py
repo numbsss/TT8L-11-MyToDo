@@ -1,8 +1,9 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox,PhotoImage
 from ttkbootstrap import Style
 import json
 
+#main class of app
 class MyToDoApp(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -49,24 +50,28 @@ class MyToDoApp(tk.Tk):
 
         #create menu
         app_menu = tk.Menu(menubar, tearoff=0)
-        menubar.add_cascade(label="=", menu=app_menu)
+        menubar.add_cascade(label="☰", menu=app_menu)
 
         #menu items
-        app_menu.add_command(label="game1", command=self.game1)
-        app_menu.add_command(label="game2", command=self.game2)
+        app_menu.add_command(label="game1", command=self.game1__init__)
+        app_menu.add_command(label="game2", command=self.game2__init__)
         app_menu.add_separator()
         app_menu.add_command(label="Exit", command=self.quit)
+        
 
         self.load_tasks()
     
-    def game1(self):
+    #func game1__init__
+    def game1__init__(self):
         #will be added once game 1 finished
         pass
     
-    def game2(self):
+    #func game2__init__
+    def game2__init__(self):
         #will be added once game 2 finished
         pass
 
+    #func view_stats using json file
     def view_stats(self):
         done_count = 0
         total_count = self.task_list.size()
@@ -75,6 +80,7 @@ class MyToDoApp(tk.Tk):
                 done_count += 1
         messagebox.showinfo("Task Statistics", f"Total tasks: {total_count}\nCompleted tasks: {done_count}")
 
+    #func add_task
     def add_task(self):
         task = self.task_input.get()
         if task != "Enter your to-do-task here ...":
@@ -83,28 +89,33 @@ class MyToDoApp(tk.Tk):
             self.task_input.delete(0, tk.END)
             self.save_tasks()
 
+    #func mark_done from task list
     def mark_done(self):
         task_index = self.task_list.curselection()
         if task_index:
             self.task_list.itemconfig(task_index, fg="green")
             self.save_tasks()
     
+    #func delete_task from task list
     def delete_task(self):
         task_index = self.task_list.curselection()
         if task_index:
             self.task_list.delete(task_index)
             self.save_tasks()
     
+    #func clear_placeholder, cleared box when clicked
     def clear_placeholder(self, event):
         if self.task_input.get() == "Enter your to-do-task here ...":
             self.task_input.delete(0, tk.END)
             self.task_input.configure(style="TEntry")
 
+    #func restore_placeholder, restore box to inital when put blank
     def restore_placeholder(self, event):
         if self.task_input.get() == "":
             self.task_input.insert(0, "Enter your to-do-task here ...")
             self.task_input.configure(style="Custom.TEntry")
 
+    #func load_tasks, gain saved data from tasks.json to be displayed
     def load_tasks(self):
         try:
             with open("tasks.json", "r") as f:
@@ -115,6 +126,7 @@ class MyToDoApp(tk.Tk):
         except FileNotFoundError:
             pass
     
+    #func save_tasks, saves task into tasks.json
     def save_tasks(self):
         data = []
         for i in range(self.task_list.size()):
