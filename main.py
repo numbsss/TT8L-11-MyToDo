@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox,PhotoImage
 from ttkbootstrap import Style
 import json
+import subprocess
 
 #main class of app
 class MyToDoApp(tk.Tk):
@@ -63,8 +64,8 @@ class MyToDoApp(tk.Tk):
     
     #func game1__init__
     def game1__init__(self):
+        subprocess.Popen(["python","game_1.py"])
         #will be added once game 1 finished
-        pass
     
     #func game2__init__
     def game2__init__(self):
