@@ -64,6 +64,9 @@ while running:
     pygame.draw.rect(screen, yellow, right_edge_marker)
 
     # draw the lane markers 
+    lane_marker_move_y += speed * 2
+    if lane_marker_move_y >= marker_height * 2:
+        pygame.draw.rect(screen, white, (left_lane + 45, y + lane_marker_move_y, marker_width, marker_height))
     for y in range(marker_height * -2, height, marker_height * 2):
         pygame.draw.rect(screen, white, (left_lane + 45, y + lane_marker_move_y, marker_width, marker_height))
         pygame.draw.rect(screen, white, (centre_lane + 45, y + lane_marker_move_y, marker_width, marker_height))             
