@@ -3,6 +3,9 @@ from tkinter import ttk, messagebox,PhotoImage
 from ttkbootstrap import Style
 import json
 import subprocess
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
+game1_path = os.path.join(script_dir, 'game_1.py')
 
 #main class of app
 class MyToDoApp(tk.Tk):
@@ -64,8 +67,12 @@ class MyToDoApp(tk.Tk):
     
     #func game1__init__
     def game1__init__(self):
-        subprocess.Popen(["python","game_1.py"])
-        #will be added once game 1 finished
+        done_count = sum(1 for i in range(self.task_list.size()) if self.task_list.itemcget(i, "fg") == "green")
+        if done_count >= 5:
+            subprocess.Popen(["python",game1_path])
+        else:
+            messagebox.showinfo("Alert","You have to finish minimum of 5 tasks to unlock this game!")
+        #when done tasks >=5 can play game 
     
     #func game2__init__
     def game2__init__(self):
@@ -74,11 +81,8 @@ class MyToDoApp(tk.Tk):
 
     #func view_stats using json file
     def view_stats(self):
-        done_count = 0
+        done_count = sum(1 for i in range(self.task_list.size()) if self.task_list.itemcget(i,"fg")=="green")
         total_count = self.task_list.size()
-        for i in range(total_count):
-            if self.task_list.itemcget(i, "fg") == "green":
-                done_count += 1
         messagebox.showinfo("Task Statistics", f"Total tasks: {total_count}\nCompleted tasks: {done_count}")
 
     #func add_task
