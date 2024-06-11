@@ -6,6 +6,7 @@ import subprocess
 import os
 script_dir = os.path.dirname(os.path.abspath(__file__))
 game1_path = os.path.join(script_dir, 'game_1.py')
+game2_path = os.path.join(script_dir, 'game_2.py')
 
 #main class of app
 class MyToDoApp(tk.Tk):
@@ -76,8 +77,14 @@ class MyToDoApp(tk.Tk):
     
     #func game2__init__
     def game2__init__(self):
+        done_count = sum(1 for i in range(self.task_list.size()) if self.task_list.itemcget(i, "fg") == "green")
+        if done_count >= 10:
+            #pass
+            subprocess.Popen(["python",game2_path])
+        else:
+            messagebox.showinfo("Alert","You have to finish minimum of 10 tasks to unlock this game!")
         #will be added once game 2 finished
-        pass
+        
 
     #func view_stats using json file
     def view_stats(self):
