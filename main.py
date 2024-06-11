@@ -79,7 +79,6 @@ class MyToDoApp(tk.Tk):
     def game2__init__(self):
         done_count = sum(1 for i in range(self.task_list.size()) if self.task_list.itemcget(i, "fg") == "green")
         if done_count >= 10:
-            #pass
             subprocess.Popen(["python",game2_path])
         else:
             messagebox.showinfo("Alert","You have to finish minimum of 10 tasks to unlock this game!")
