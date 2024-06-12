@@ -32,6 +32,7 @@ lives = 3
 current_level = 1
 platform_color = ORANGE
 
+# game function
 def show_text_on_screen(text, font_size, y_position):
     font = pygame.font.Font(None, font_size)
     text_render = font.render(text, True, WHITE)
@@ -47,7 +48,7 @@ def wait_for_key():
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
                 waiting = False
-                
+
 def start_screen():
     screen.fill(BLACK)
     show_text_on_screen("Bouncing Ball Game", 50, HEIGHT // 4)
@@ -64,3 +65,13 @@ def game_over_screen():
     pygame.display.flip()
     wait_for_key()
 
+def victory_screen():
+    screen.fill(BLACK)
+    show_text_on_screen("Congratulations!", 50, HEIGHT // 3)
+    show_text_on_screen(f"You've won with a score of {score}", 30, HEIGHT // 2)
+    show_text_on_screen("Press any key to exit...", 20, HEIGHT * 2 // 3)
+    pygame.display.flip()
+    wait_for_key()
+
+def change_platform_color():
+    return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
