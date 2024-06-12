@@ -32,4 +32,18 @@ lives = 3
 current_level = 1
 platform_color = ORANGE
 
+def start_screen():
+    screen.fill(BLACK)
+    show_text_on_screen("Bouncing Ball Game", 50, HEIGHT // 4)
+    show_text_on_screen("Press any key to start...", 30, HEIGHT // 3)
+    show_text_on_screen("Move the platform with arrow keys...", 30, HEIGHT // 2)
+    pygame.display.flip()
+    wait_for_key()
 
+def game_over_screen():
+    screen.fill(BLACK)
+    show_text_on_screen("Game Over", 50, HEIGHT // 3)
+    show_text_on_screen(f"Your final score: {score}", 30, HEIGHT // 2)
+    show_text_on_screen("Press any key to restart...", 20, HEIGHT * 2 // 3)
+    pygame.display.flip()
+    wait_for_key()
