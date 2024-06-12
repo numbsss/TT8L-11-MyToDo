@@ -91,4 +91,13 @@ while game_running:
 
     platform_pos[0] = max(0, min(platform_pos[0], WIDTH - PLATFORM_WIDTH))
     platform_pos[1] = max(0, min(platform_pos[1], HEIGHT - PLATFORM_HEIGHT))
-       
+
+    ball_pos[0] += ball_speed[0]
+    ball_pos[1] += ball_speed[1]
+
+    if ball_pos[0] <= 0 or ball_pos >= WIDTH:
+        ball_speed[0] = -ball_speed[0]
+
+    if ball_pos[1] <= 0 :
+        ball_speed[1] = -ball_speed[1]
+              
