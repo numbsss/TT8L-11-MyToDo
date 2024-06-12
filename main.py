@@ -14,10 +14,35 @@ class MyToDoApp(tk.Tk):
         super().__init__()
 
         self.title("MyToDo App")
-        self.geometry("400x500")
+        self.geometry("600x800")
         style = Style(theme="flatly")
         style.configure("Custom.TEntry", foreground="gray")
         self.iconbitmap("icon.ico")
+
+        # startup window
+        startup_window = tk.Toplevel(self)
+        startup_window.title("Welcome")
+        startup_window.geometry("600x250")
+        startup_window.iconbitmap("icon.ico")
+
+        # Startup message
+        startup_label = ttk.Label(startup_window, text="Welcome to MyToDo App!", font=("TkDefaultFont", 20))
+        startup_label.pack(pady=10)
+
+        # User notes
+        side_notes = [
+            "You can add tasks by typing in the input box and clicking the 'Add' button.",
+            "To mark a task as done, select it from the list and click the 'Done' button.",
+            "To delete a task, select it from the list and click the 'Delete' button.",
+            "Click the 'View Stats' button to see task statistics.",
+            "Reward yourself with some fun minigames as you finished your tasks!",
+            "Note:", 
+            "Once you've done 5 tasks, you can unlock the Car Game. 10 tasks, you can unlock the TeqBall Simulator"
+        ]
+
+        for note in side_notes:
+            note_label = ttk.Label(startup_window, text=note)
+            note_label.pack()
 
         #input box
         self.task_input = ttk.Entry(self, font=(
