@@ -38,6 +38,16 @@ def show_text_on_screen(text, font_size, y_position):
     text_rect = text_render.get_rect(center=(WIDTH // 2, y_position))
     screen.blit(text_render, text_rect)
 
+def wait_for_key():
+    waiting = True
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                waiting = False
+                
 def start_screen():
     screen.fill(BLACK)
     show_text_on_screen("Bouncing Ball Game", 50, HEIGHT // 4)
@@ -53,3 +63,4 @@ def game_over_screen():
     show_text_on_screen("Press any key to restart...", 20, HEIGHT * 2 // 3)
     pygame.display.flip()
     wait_for_key()
+
