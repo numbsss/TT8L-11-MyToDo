@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 import random
 
-from pygame.sprite import _Group 
+from pygame.sprite import Group 
 
 pygame.init()
 
@@ -43,21 +43,33 @@ lanes = [left_lane, centre_lane, right_lane]
 # for animating movement of the lane markers 
 lane_marker_move_y = 0
 
-class Vehicle(pygame.sprite.Sprite)
+class Vehicle(pygame.sprite.Sprite):
     
     def __init__(self, image, x, y):
         pygame.sprite.Sprite.__init__(self)
 
         #scale the image down so it fits in the lane 
         image_scale  = 45 / image.get_rect().width
-        new_width = image.get_rect()width. * image_scale
+        new_width = image.get_rect().width * image_scale
         new_height = image.get_rect().height * image_scale
         self.image = pygame.transform.scale(image, (new_width, new_height))
 
         self.rect = self.image.get_rect ()
-        self.rect.centre = [x, y]
+        self.rect.center = [x, y]  # Fixed typo here, it should be "center", not "centre"
 
-# game loop 
+class PlayerVehicle(Vehicle):
+    
+    def __init__(self, x, y):
+        image = pygame.image.load('car.png')  # Corrected file path here
+        super().__init__(image, x, y)
+        
+player_x = 250
+player_y = 400
+
+player_group = pygame.sprite.Group()
+player = PlayerVehicle(player_x, player_y)
+player_group.add(player)
+
 clock = pygame.time.Clock()
 fps = 120
 running = True
@@ -83,10 +95,12 @@ while running:
     lane_marker_move_y += speed * 2
     if lane_marker_move_y >= marker_height * 2:
         lane_marker_move_y = 0
-        pygame.draw.rect(screen, white, (left_lane + 45, y + lane_marker_move_y, marker_width, marker_height))
+        pygame.draw.rect(screen, white, (left_lane + 45, lane_marker_move_y, marker_width, marker_height))  # Removed unnecessary 'y +'
     for y in range(marker_height * -2, height, marker_height * 2):
         pygame.draw.rect(screen, white, (left_lane + 45, y + lane_marker_move_y, marker_width, marker_height))
-        pygame.draw.rect(screen, white, (centre_lane + 45, y + lane_marker_move_y, marker_width, marker_height))             
+        pygame.draw.rect(screen, white, (centre_lane + 45, y + lane_marker_move_y, marker_width, marker_height))
+
+    player_group.draw(screen)
 
     pygame.display.update()
 
