@@ -80,6 +80,14 @@ while running:
     for event in pygame.event.get():
         if event.type == QUIT:
             running = False 
+
+        # move the player's car using the left/right arrow key
+        if event.type == KEYDOWN:
+
+            if event.key == K_LEFT and player.rect.centre[0] > left_lane:
+                player.rect.x == 100
+            elif event.key == K_RIGHT and player.rect.centre[0] < right_lane:
+                player.rect.x == 100 
             
     # draw the grass
     screen.fill(green)
