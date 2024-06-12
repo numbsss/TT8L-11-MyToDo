@@ -51,7 +51,7 @@ def wait_for_key():
 
 def start_screen():
     screen.fill(BLACK)
-    show_text_on_screen("Bouncing Ball Game", 50, HEIGHT // 4)
+    show_text_on_screen("Teqball Game", 50, HEIGHT // 4)
     show_text_on_screen("Press any key to start...", 30, HEIGHT // 3)
     show_text_on_screen("Move the platform with arrow keys...", 30, HEIGHT // 2)
     pygame.display.flip()
@@ -84,4 +84,11 @@ while game_running:
         if event.type == pygame.QUIT:
             game_running = False
 
-    keys = pygame.key.get_pressed()        
+    keys = pygame.key.get_pressed() 
+
+    platform_pos[0] += (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * platform_speed
+    platform_pos[1] += (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * platform_speed
+
+    platform_pos[0] = max(0, min(platform_pos[0], WIDTH - PLATFORM_WIDTH))
+    platform_pos[1] = max(0, min(platform_pos[1], HEIGHT - PLATFORM_HEIGHT))
+       
