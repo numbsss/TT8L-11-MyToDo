@@ -32,6 +32,12 @@ lives = 3
 current_level = 1
 platform_color = ORANGE
 
+def show_text_on_screen(text, font_size, y_position):
+    font = pygame.font.Font(None, font_size)
+    text_render = font.render(text, True, WHITE)
+    text_rect = text_render.get_rect(center=(WIDTH // 2, y_position))
+    screen.blit(text_render, text_rect)
+
 def start_screen():
     screen.fill(BLACK)
     show_text_on_screen("Bouncing Ball Game", 50, HEIGHT // 4)
