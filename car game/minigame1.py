@@ -36,9 +36,9 @@ right_edge_marker = (395, 0, marker_width, height)
 
 # x coordinates of lanes 
 left_lane =  150
-centre_lane = 250
+center_lane = 250
 right_lane =  350
-lanes = [left_lane, centre_lane, right_lane]
+lanes = [left_lane, center_lane, right_lane]
 
 # for animating movement of the lane markers 
 lane_marker_move_y = 0
@@ -84,10 +84,10 @@ while running:
         # move the player's car using the left/right arrow key
         if event.type == KEYDOWN:
 
-            if event.key == K_LEFT and player.rect.centre[0] > left_lane:
-                player.rect.x == 100
-            elif event.key == K_RIGHT and player.rect.centre[0] < right_lane:
-                player.rect.x == 100 
+            if event.key == K_LEFT and player.rect.center[0] > left_lane:
+                player.rect.x -= 100
+            elif event.key == K_RIGHT and player.rect.center[0] < right_lane:
+                player.rect.x += 100 
             
     # draw the grass
     screen.fill(green)
@@ -106,7 +106,7 @@ while running:
         pygame.draw.rect(screen, white, (left_lane + 45, lane_marker_move_y, marker_width, marker_height))  # Removed unnecessary 'y +'
     for y in range(marker_height * -2, height, marker_height * 2):
         pygame.draw.rect(screen, white, (left_lane + 45, y + lane_marker_move_y, marker_width, marker_height))
-        pygame.draw.rect(screen, white, (centre_lane + 45, y + lane_marker_move_y, marker_width, marker_height))
+        pygame.draw.rect(screen, white, (center_lane + 45, y + lane_marker_move_y, marker_width, marker_height))
 
     player_group.draw(screen)
 
