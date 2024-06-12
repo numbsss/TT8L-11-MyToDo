@@ -17,6 +17,7 @@ class MyToDoApp(tk.Tk):
         self.geometry("400x500")
         style = Style(theme="flatly")
         style.configure("Custom.TEntry", foreground="gray")
+        self.iconbitmap("icon.ico")
 
         #input box
         self.task_input = ttk.Entry(self, font=(
@@ -58,8 +59,8 @@ class MyToDoApp(tk.Tk):
         menubar.add_cascade(label="☰", menu=app_menu)
 
         #menu items
-        app_menu.add_command(label="game1", command=self.game1__init__)
-        app_menu.add_command(label="game2", command=self.game2__init__)
+        app_menu.add_command(label="Race Car", command=self.game1__init__)
+        app_menu.add_command(label="TeqBall Simulator", command=self.game2__init__)
         app_menu.add_separator()
         app_menu.add_command(label="Exit", command=self.quit)
         
