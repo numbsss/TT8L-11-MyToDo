@@ -21,7 +21,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("TeqBall Simulator")
 font = pygame.font.Font(None, 36)
 
-clock = pygame.time.clock()
+clock = pygame.time.Clock()
 
 ball_pos = [WIDTH // 2, HEIGHT // 2]
 ball_speed = [random.uniform(2, 4), random.uniform(2, 4)]  
@@ -75,3 +75,13 @@ def victory_screen():
 
 def change_platform_color():
     return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+
+start_screen()
+game_running = True
+
+while game_running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            game_running = False
+
+    keys = pygame.key.get_pressed()        
