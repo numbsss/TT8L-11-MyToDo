@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, messagebox,PhotoImage
+from tkinter import ttk, messagebox,simpledialog, PhotoImage
 from ttkbootstrap import Style
 import json
 import subprocess
@@ -62,14 +62,16 @@ class MyToDoApp(tk.Tk):
 
         #listbox display added tasks
         self.task_list = tk.Listbox(self, font=(
-            "TkDefaultFont", 16), height=10, selectmode=tk.NONE)
+            "TkDefaultFont", 16), height=10, selectmode=tk.BROWSE)
         self.task_list.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        #marking tasks as done/deleting button
+        #marking tasks as done/deleting/editing button
         ttk.Button(self, text="Done", style="success.TButton",
                    command=self.mark_done).pack(side=tk.LEFT, padx=10, pady=10)
         ttk.Button(self, text="Delete", style="danger.TButton",
-                   command=self.delete_task).pack(side=tk.RIGHT, padx=10, pady=10)
+                   command=self.delete_task).pack(side=tk.LEFT, padx=10, pady=10)
+        ttk.Button(self, text="Edit", style="warning.TButton",
+                   command=self.edit_task).pack(side=tk.LEFT, padx=10, pady=10)
         
         #task stats display button
         ttk.Button(self, text="View Stats", style="info.TButton",
@@ -139,6 +141,18 @@ class MyToDoApp(tk.Tk):
         if task_index:
             self.task_list.delete(task_index)
             self.save_tasks()
+    #func edit_task from task list
+    def edit_task(self):
+        task_index = self.task_list.curselection()
+        if task_index:
+            task_index = task_index[0]
+            old_task = self.task_list.get(task_index)
+            new_task = simpledialog.askstring("Edit Task", "Edit your Task", initialvalue=old_task)
+            if new_task:
+                self.task_list.delete(task_index)
+                self.task_list.insert(task_index,new_task)
+                self.task_list.itemconfig(task_index, fg= "orange")
+                self.save_tasks()
     
     #func clear_placeholder, cleared box when clicked
     def clear_placeholder(self, event):
