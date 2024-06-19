@@ -140,7 +140,7 @@ while running:
     lane_marker_move_y += speed * 2
     if lane_marker_move_y >= marker_height * 2:
         lane_marker_move_y = 0
-        pygame.draw.rect(screen, white, (left_lane + 45, lane_marker_move_y, marker_width, marker_height))  # Removed unnecessary 'y +'
+        pygame.draw.rect(screen, white, (left_lane + 45, lane_marker_move_y, marker_width, marker_height)) 
     for y in range(marker_height * -2, height, marker_height * 2):
         pygame.draw.rect(screen, white, (left_lane + 45, y + lane_marker_move_y, marker_width, marker_height))
         pygame.draw.rect(screen, white, (center_lane + 45, y + lane_marker_move_y, marker_width, marker_height))
@@ -148,13 +148,13 @@ while running:
     # draw ther player's car
     player_group.draw(screen)
 
-    # add up to two vehicles
+    # add a vehicles
     if len(vehicle_group) < 2:
 
         # ensure there's enough gap between vehicles 
         add_vehicles = True
         for vehicle in vehicle_group:
-            if vehucle.rect.top < vehicle.rect.height * 1.5:
+            if vehicle.rect.top < vehicle.rect.height * 1.5:
                 add_vehicle = False
 
             if add_vehicle :
@@ -176,7 +176,11 @@ while running:
             vehicle.kill()
 
             # add to score
-            score =+ 1
+            score += 1
+
+            # speed up the game after passing 5 vehicles 
+            if score > 0 and score % 5 == 0:
+                speed += 1
 
     # draw the vehicles 
     vehicle_group.draw(screen)
