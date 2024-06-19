@@ -73,7 +73,7 @@ player_group.add(player)
 # load the other vehicle
 image_filenames = ['pickup_truck.png','semi_trailer.png','taxi.png','van.png']
 vehicle_images = []
-for image_filename in image_filename:
+for image_filename in image_filenames:
     image = pygame.image.load('images/' + image_filename)
     vehicle_images.append(image)
 
@@ -198,8 +198,29 @@ while running:
         text_rect.center = (width / 2, 100)
         screen.blit(text, text_rect)    
 
-
-
     pygame.display.update()
+
+    # check if player want to play again
+    while gameover:
+
+        clock.tick(fps)
+
+        for event in pygame.event.get():
+            gameover = False 
+            running = False
+
+        # get the player's input (y or n)
+        if event.type == KEYDOWN:
+            if event.key == K_y:
+                # reset the game
+                gameover = False
+                speed = 2
+                score = 0
+                vehicle_group.empty()
+                player.rect.center = [player_x, player_y]
+            elif event.key == K_n:
+                # exit the loops
+                gameover = False
+                running = False
 
 pygame.quit()
