@@ -188,7 +188,8 @@ while running:
     # display the score 
     font = pygame.font.Font(pygame.font.get_default_font(), 16)
     text = font.render('Score: ' + str(score), True, white)
-    text_rect = text.get-rect()
+    text_rect = text.get_rect()
+    text_rect.center = (50, 400)
     screen.blit(text, text_rect)
 
     # check if there's a head on collision
@@ -202,7 +203,7 @@ while running:
 
         pygame.draw.rect(screen, red, (0, 50, width, 100)) 
 
-        font = pygame.font.font(pygame.fpnt.get_default-font(), 16)
+        font = pygame.font.Font(pygame.font.get_default_font(), 16)
         text = font.render('Game Over. Play again? (Enter Y or N)', True, white)
         text_rect = text.get_rect()
         text_rect.center = (width / 2, 100)
@@ -216,6 +217,8 @@ while running:
         clock.tick(fps)
 
         for event in pygame.event.get():
+
+            if event.type == QUIT:
             gameover = False 
             running = False
 
