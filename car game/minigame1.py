@@ -20,19 +20,10 @@ red = (200, 0, 0)
 white = (255, 255, 255)
 yellow = (255, 232, 0)
 
-# game settings
-gameover =  False 
-speed = 2
-score = 0
-
 #markers size
+road_width = 300
 marker_width = 10
 marker_height = 50
-
-# road and edge markers
-road = (100, 0, 300, height)
-left_edge_marker = (95, 0, marker_width, height)
-right_edge_marker = (395, 0, marker_width, height)
 
 # x coordinates of lanes 
 left_lane =  150
@@ -40,8 +31,22 @@ center_lane = 250
 right_lane =  350
 lanes = [left_lane, center_lane, right_lane]
 
+# road and edge markers
+road = (100, 0, road_width, height)
+left_edge_marker = (95, 0, marker_width, height)
+right_edge_marker = (395, 0, marker_width, height)
+
 # for animating movement of the lane markers 
 lane_marker_move_y = 0
+
+# player's starting coordinates 
+player_x = 250
+player_y = 400
+
+# game settings
+gameover =  False 
+speed = 2
+score = 0
 
 class Vehicle(pygame.sprite.Sprite):
     
@@ -55,16 +60,13 @@ class Vehicle(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(image, (new_width, new_height))
 
         self.rect = self.image.get_rect ()
-        self.rect.center = [x, y]  # Fixed typo here, it should be "center", not "centre"
+        self.rect.center = [x, y]  
 
 class PlayerVehicle(Vehicle):
     
     def __init__(self, x, y):
-        image = pygame.image.load('car.png')  # Corrected file path here
+        image = pygame.image.load('car.png')  
         super().__init__(image, x, y)
-        
-player_x = 250
-player_y = 400
 
 player_group = pygame.sprite.Group()
 player = PlayerVehicle(player_x, player_y)
