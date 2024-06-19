@@ -70,6 +70,17 @@ player_group = pygame.sprite.Group()
 player = PlayerVehicle(player_x, player_y)
 player_group.add(player)
 
+# load the other vehicle
+image_filenames = ['pickup_truck.png','semi_trailer.png','taxi.png','van.png']
+vehicle_images = []
+for image_filename in image_filename:
+    image = pygame.image.load('images/' + image_filename)
+    vehicle_images.append(image)
+
+
+# sprite group for vehicles
+vehicle_group = pygame.sprite.Group()
+
 clock = pygame.time.Clock()
 fps = 120
 running = True
@@ -108,7 +119,29 @@ while running:
         pygame.draw.rect(screen, white, (left_lane + 45, y + lane_marker_move_y, marker_width, marker_height))
         pygame.draw.rect(screen, white, (center_lane + 45, y + lane_marker_move_y, marker_width, marker_height))
 
+    # draw ther player's car
     player_group.draw(screen)
+
+    # add up to two vehicles
+    if len(vehicle_group) < 2:
+
+        # ensure there's enough gap between vehicles 
+        add_vehicles = True
+        for vehicle in vehicle_group:
+            if vehucle.rect.top < vehicle.rect.height * 1.5:
+                add_vehicle = False
+
+            if add_vehicle :
+
+                # select a random lane
+                lane = random.choice(lanes)
+
+                # select a random vehicle image 
+                image = random.choice(vehicle_images)
+                vehicle = Vehicle(image, lane, height / -2)
+                vehicle_group.add(vehicle)
+    
+
 
     pygame.display.update()
 
