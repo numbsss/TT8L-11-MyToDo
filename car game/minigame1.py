@@ -111,7 +111,7 @@ while running:
                     gameover = True
 
                     # place the player's car next to other vehicles
-                    # and determine where to position the carsh image
+                    # and determine where to position the crash image
                     if event.key == K_LEFT:
                         player.rect.left = vehicle.rect.right
                         crash_rect.center = [player.rect.center (player.rect.center[1] + vehicle.rect.center[1] + vehicle.rect.center[1]) /2]
@@ -180,6 +180,25 @@ while running:
     text = font.render('Score: ' + str(score), True, white)
     text_rect = text.get-rect()
     screen.blit(text, text_rect)
+
+    # check if there's a head on collision
+    if pygame.sprite.spritecollide(player, vehicle_group, True):
+        gameover = True
+        crash_rect.center = [player.rect.center[0], player.rect.top]
+    
+    # display gameover
+    if gameover:
+        screen.blit(crash, crash_rect)
+
+        pygame.draw.rect(screen, red, (0, 50, width, 100)) 
+
+        font = pygame.font.font(pygame.fpnt.get_default-font(), 16)
+        text = font.render('Game Over. Play again? (Enter Y or N)', True, white)
+        text_rect = text.get_rect()
+        text_rect.center = (width / 2, 100)
+        screen.blit(text, text_rect)    
+
+
 
     pygame.display.update()
 
