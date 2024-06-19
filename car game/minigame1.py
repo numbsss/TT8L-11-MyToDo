@@ -140,8 +140,26 @@ while running:
                 image = random.choice(vehicle_images)
                 vehicle = Vehicle(image, lane, height / -2)
                 vehicle_group.add(vehicle)
-    
 
+    # make the vehicles move
+    for vehicle in vehicle_group:
+        vehicle.rect.y += speed 
+
+        # remove the vehicle once it goes off screen
+        if vehicle.rect.top >= height:
+            vehicle.kill()
+
+            # add to score
+            score =+ 1
+
+    # draw the vehicles 
+    vehicle_group draw(screen)
+
+    # display the score 
+    font = pygame.font.Font(pygame.font.get_default_font(), 16)
+    text = font.render('Score: ' + str(score), True, white)
+    text_rect = text.get-rect()
+    screen.blit(text, text_rect)
 
     pygame.display.update()
 
