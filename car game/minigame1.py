@@ -2,8 +2,6 @@ import pygame
 from pygame.locals import *
 import random
 
-from pygame.sprite import Group 
-
 pygame.init()
 
 #create the window 
@@ -219,8 +217,8 @@ while running:
         for event in pygame.event.get():
 
             if event.type == QUIT:
-            gameover = False 
-            running = False
+                gameover = False 
+                running = False
 
         # get the player's input (y or n)
         if event.type == KEYDOWN:
