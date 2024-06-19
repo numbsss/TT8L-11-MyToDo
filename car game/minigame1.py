@@ -68,9 +68,13 @@ class PlayerVehicle(Vehicle):
         image = pygame.image.load('car.png')  
         super().__init__(image, x, y)
 
+#sprite groups
 player_group = pygame.sprite.Group()
+vehicle_group = pygame.sprite.Group()
+
+#create the player's car
 player = PlayerVehicle(player_x, player_y)
-player_group.add(player)
+vehicle_group.add(player)
 
 # load the other vehicle
 image_filenames = ['pickup_truck.png','semi_trailer.png','taxi.png','van.png']
@@ -79,12 +83,12 @@ for image_filename in image_filenames:
     image = pygame.image.load('images/' + image_filename)
     vehicle_images.append(image)
 
-# sprite group for vehicles
-vehicle_group = pygame.sprite.Group()
-
 # load the crash image 
 crash = pygame.image.load('images/crash.png')
 crash_rect = crash.get_rect()
+
+# sprite group for vehicles
+vehicle_group = pygame.sprite.Group()
 
 # game loop
 clock = pygame.time.Clock()
@@ -116,7 +120,7 @@ while running:
                     # and determine where to position the crash image
                     if event.key == K_LEFT:
                         player.rect.left = vehicle.rect.right
-                        crash_rect.center = [player.rect.center (player.rect.center[1] + vehicle.rect.center[1] + vehicle.rect.center[1]) /2]
+                        crash_rect.center = [player.rect.left, (player.rect.center[1] + vehicle.rect.center[1]) /2]
                     elif event.key == K_RIGHT:
                         player.rect.right = vehicle.rect.left
                         crash_rect.center = [player.rect.right, (player.rect.center[1] + vehicle.rect.center[1]) / 2]
