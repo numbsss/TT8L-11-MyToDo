@@ -143,4 +143,9 @@ while game_running:
     level_rect = level_text.get_rect(topleft=(score_rect.topright[0] + info_spacing, info_line_y))
     pygame.draw.rect(screen, LIGHT_BLUE, level_rect.inflate(10, 5))
     screen.blit(level_text, level_rect)
+    
+    lives_text = font.render(f"Lives: {lives}", True, WHITE)
+    lives_rect = lives_text.get_rect(topleft=(level_rect.topright[0] + info_spacing, info_line_y))
+    pygame.draw.rect(screen, RED, lives_rect.inflate(10, 5))
+    screen.blit(lives_text, lives_rect)
            
