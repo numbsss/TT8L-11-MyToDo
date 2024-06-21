@@ -138,4 +138,9 @@ while game_running:
     score_rect = score_text.get_rect(topleft=(10, info_line_y))
     pygame.draw.rect(screen, ORANGE, score_rect.inflate(10, 5))
     screen.blit(score_text, score_rect)
+
+    level_text = font.render(f"Level: {current_level}", True, WHITE)
+    level_rect = level_text.get_rect(topleft=(score_rect.topright[0] + info_spacing, info_line_y))
+    pygame.draw.rect(screen, LIGHT_BLUE, level_rect.inflate(10, 5))
+    screen.blit(level_text, level_rect)
            
