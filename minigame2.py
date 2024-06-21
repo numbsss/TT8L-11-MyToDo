@@ -100,4 +100,15 @@ while game_running:
 
     if ball_pos[1] <= 0 :
         ball_speed[1] = -ball_speed[1]
-              
+
+    if (
+        platform_pos[0] <= ball_pos[0] <= platform_pos[0] + PLATFORM_WIDTH
+        and platform_pos[1] <= ball_pos[1] <= platform_pos[1] + PLATFORM_HEIGHT
+    ):
+        ball_speed[1] = -ball_speed[1]
+        score += 1       
+    if score >= current_level * 10:
+        current_level += 1
+        ball_pos = [WIDTH // 2, HEIGHT // 2]
+        ball_speed = [random.uniform(2, 4), random.uniform(2, 4)]  # Randomize the ball speed
+        platform_color = change_platform_color()
