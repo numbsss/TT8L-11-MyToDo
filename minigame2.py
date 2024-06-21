@@ -95,7 +95,7 @@ while game_running:
     ball_pos[0] += ball_speed[0]
     ball_pos[1] += ball_speed[1]
 
-    if ball_pos[0] <= 0 or ball_pos >= WIDTH:
+    if ball_pos[0] <= 0 or ball_pos[0] >= WIDTH:
         ball_speed[0] = -ball_speed[0]
 
     if ball_pos[1] <= 0 :
