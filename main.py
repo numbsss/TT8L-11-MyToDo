@@ -62,7 +62,7 @@ class MyToDoApp(tk.Tk):
         #input box due date
         due_date_label = ttk.Label(self, text="Due Date:", font=("TkDefaultFont", 16))
         due_date_label.pack(pady=10)
-        self.due_date_input = DateEntry(self, font=("TkDefaultFont", 16), width=12, background="darkblue", foreground="white", borderwidth=2, date_pattern="dd-mm-yyyy") # specify date pattern
+        self.due_date_input = DateEntry(self, font=("TkDefaultFont", 16), width=12, background="darkblue", foreground="white", borderwidth=2, date_pattern="dd-mm-yyyy")
         self.due_date_input.pack(pady=10)
         
         #addingtask button
