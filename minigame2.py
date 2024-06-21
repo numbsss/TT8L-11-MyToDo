@@ -127,3 +127,9 @@ while game_running:
                 ball_pos = [WIDTH // 2, HEIGHT // 2]
                 
                 ball_speed = [random.uniform(2, 4), random.uniform(2, 4)]
+
+    screen.fill(BLACK)
+    pygame.draw.circle(screen, WHITE, (int(ball_pos[0]), int(ball_pos[1])), BALL_RADIUS)
+    pygame.draw.rect(screen, platform_color, (int(platform_pos[0]), int(platform_pos[1]), PLATFORM_WIDTH, PLATFORM_HEIGHT))
+    info_line_y = 10
+    info_spacing = 75                
