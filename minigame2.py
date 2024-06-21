@@ -148,4 +148,8 @@ while game_running:
     lives_rect = lives_text.get_rect(topleft=(level_rect.topright[0] + info_spacing, info_line_y))
     pygame.draw.rect(screen, RED, lives_rect.inflate(10, 5))
     screen.blit(lives_text, lives_rect)
+
+    pygame.display.flip()
+    clock.tick(FPS)
+pygame.quit()
            
