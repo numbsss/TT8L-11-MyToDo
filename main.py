@@ -1,9 +1,10 @@
 import tkinter as tk
-from tkinter import ttk, messagebox,simpledialog, PhotoImage
+from tkinter import ttk, messagebox, simpledialog
 from ttkbootstrap import Style
-import json
+import sqlite3
 import subprocess
 import os
+
 script_dir = os.path.dirname(os.path.abspath(__file__))
 game1_path = os.path.join(script_dir, 'game_1.py')
 game2_path = os.path.join(script_dir, 'game_2.py')
@@ -18,6 +19,9 @@ class MyToDoApp(tk.Tk):
         style = Style(theme="flatly")
         style.configure("Custom.TEntry", foreground="gray")
         self.iconbitmap("icon.ico")
+
+        self.conn = sqlite3.connect("tasks.db")
+        self.create_table()
 
         # startup window
         startup_window = tk.Toplevel(self)
@@ -94,6 +98,18 @@ class MyToDoApp(tk.Tk):
 
         self.load_tasks()
     
+    #func create_table
+    def create_table(self):
+        cursor = self.conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS tasks (
+                id INTEGER PRIMARY KEY,
+                text TEXT,
+                color TEXT
+            )
+        ''')
+        self.conn.commit()
+
     #func game1__init__
     def game1__init__(self):
         done_count = sum(1 for i in range(self.task_list.size()) if self.task_list.itemcget(i, "fg") == "green")
@@ -141,6 +157,7 @@ class MyToDoApp(tk.Tk):
         if task_index:
             self.task_list.delete(task_index)
             self.save_tasks()
+
     #func edit_task from task list
     def edit_task(self):
         task_index = self.task_list.curselection()
@@ -168,24 +185,22 @@ class MyToDoApp(tk.Tk):
 
     #func load_tasks, gain saved data from tasks.json to be displayed
     def load_tasks(self):
-        try:
-            with open("tasks.json", "r") as f:
-                data = json.load(f)
-                for task in data:
-                    self.task_list.insert(tk.END, task["text"])
-                    self.task_list.itemconfig(tk.END, fg=task["color"])
-        except FileNotFoundError:
-            pass
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT text, color FROM tasks")
+        rows = cursor.fetchall()
+        for row in rows:
+            self.task_list.insert(tk.END, row[0])
+            self.task_list.itemconfig(tk.END, fg=row[1])
     
     #func save_tasks, saves task into tasks.json
     def save_tasks(self):
-        data = []
+        cursor = self.conn.cursor()
+        cursor.execute("DELETE FROM tasks")
         for i in range(self.task_list.size()):
             text = self.task_list.get(i)
             color = self.task_list.itemcget(i, "fg")
-            data.append({"text": text, "color": color})
-        with open("tasks.json", "w") as f:
-            json.dump(data, f)
+            cursor.execute("INSERT INTO tasks (text, color) VALUES (?, ?)", (text,color))
+        self.conn.commit()
 
 if __name__ == '__main__':
     app = MyToDoApp()
