@@ -112,3 +112,18 @@ while game_running:
         ball_pos = [WIDTH // 2, HEIGHT // 2]
         ball_speed = [random.uniform(2, 4), random.uniform(2, 4)]  # Randomize the ball speed
         platform_color = change_platform_color()
+
+        if ball_pos[1] >= HEIGHT:
+        
+            lives -= 1
+            if lives == 0:
+                game_over_screen()
+                start_screen()  
+                score = 0
+                lives = 3
+                current_level = 1
+            else:
+                
+                ball_pos = [WIDTH // 2, HEIGHT // 2]
+                
+                ball_speed = [random.uniform(2, 4), random.uniform(2, 4)]
