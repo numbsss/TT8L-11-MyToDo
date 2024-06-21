@@ -59,11 +59,30 @@ class MyToDoApp(tk.Tk):
         #event restore placeholder when input lose focus
         self.task_input.bind("<FocusOut>", self.restore_placeholder)
         
-        #input box due date
-        due_date_label = ttk.Label(self, text="Due Date:", font=("TkDefaultFont", 16))
-        due_date_label.pack(pady=10)
-        self.due_date_input = DateEntry(self, font=("TkDefaultFont", 16), width=12, background="darkblue", foreground="white", borderwidth=2, date_pattern="dd-mm-yyyy")
-        self.due_date_input.pack(pady=10)
+        #input box date & time due frame
+        date_time_frame = ttk.Frame(self)
+        date_time_frame.pack(pady=10)
+
+        due_date_label = ttk.Label(date_time_frame, text="Due Date:", font=("TkDefaultFont", 14))
+        due_date_label.grid(row=0, column=0, padx=10)
+        due_time_label = ttk.Label(date_time_frame, text="Due Time:", font=("TkDefaultFont", 14))
+        due_time_label.grid(row=0, column=1, padx=10)
+
+        self.due_date_input = DateEntry(date_time_frame, font=("TkDefaultFont", 12), width=12, background="darkblue", foreground="white", borderwidth=2, date_pattern="dd-mm-yyyy")
+        self.due_date_input.grid(row=1, column=0, padx=10)
+
+        time_frame = ttk.Frame(date_time_frame)
+        time_frame.grid(row=1, column=1, padx=10)
+        
+        self.hours_input = ttk.Combobox(time_frame, values=[f"{i:02d}" for i in range(24)], width=3, font=("TkDefaultFont", 12))
+        self.hours_input.set("00")
+        self.hours_input.pack(side=tk.LEFT)
+
+        ttk.Label(time_frame, text=":", font=("TkDefaultFont", 12)).pack(side=tk.LEFT)
+        
+        self.minute_input = ttk.Combobox(time_frame, values=[f"{i:02d}" for i in range(60)], width=3, font=("TkDefaultFont", 12))
+        self.minute_input.set("00")
+        self.minute_input.pack(side=tk.LEFT)
         
         #addingtask button
         ttk.Button(self, text="Add", command=self.add_task).pack(pady=5)
