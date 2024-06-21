@@ -132,4 +132,10 @@ while game_running:
     pygame.draw.circle(screen, WHITE, (int(ball_pos[0]), int(ball_pos[1])), BALL_RADIUS)
     pygame.draw.rect(screen, platform_color, (int(platform_pos[0]), int(platform_pos[1]), PLATFORM_WIDTH, PLATFORM_HEIGHT))
     info_line_y = 10
-    info_spacing = 75                
+    info_spacing = 75     
+
+    score_text = font.render(f"Score: {score}", True, WHITE)
+    score_rect = score_text.get_rect(topleft=(10, info_line_y))
+    pygame.draw.rect(screen, ORANGE, score_rect.inflate(10, 5))
+    screen.blit(score_text, score_rect)
+           
