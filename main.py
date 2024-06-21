@@ -80,9 +80,9 @@ class MyToDoApp(tk.Tk):
 
         ttk.Label(time_frame, text=":", font=("TkDefaultFont", 12)).pack(side=tk.LEFT)
         
-        self.minute_input = ttk.Combobox(time_frame, values=[f"{i:02d}" for i in range(60)], width=3, font=("TkDefaultFont", 12))
-        self.minute_input.set("00")
-        self.minute_input.pack(side=tk.LEFT)
+        self.minutes_input = ttk.Combobox(time_frame, values=[f"{i:02d}" for i in range(60)], width=3, font=("TkDefaultFont", 12))
+        self.minutes_input.set("00")
+        self.minutes_input.pack(side=tk.LEFT)
         
         #addingtask button
         ttk.Button(self, text="Add", command=self.add_task).pack(pady=5)
@@ -129,7 +129,8 @@ class MyToDoApp(tk.Tk):
                 id INTEGER PRIMARY KEY,
                 text TEXT,
                 color TEXT,
-                due_date TEXT
+                due_date TEXT,
+                due_time
             )
         ''')
         self.conn.commit()
@@ -144,6 +145,10 @@ class MyToDoApp(tk.Tk):
         if 'due_date' not in columns:
             cursor.execute('''
                 ALTER TABLE tasks ADD COLUMN due_date TEXT
+            ''')
+        if 'due_time' not in columns:
+            cursor.execute('''
+                ALTER TABLE tasks ADD COLUMN due_time TEXT
             ''')
         self.conn.commit()
 
@@ -175,15 +180,17 @@ class MyToDoApp(tk.Tk):
     #func add_task
     def add_task(self):
         task = self.task_input.get()
-        due_date = self.due_date_input.get_date().strftime("%d-%m-%Y")  # Format due date
+        due_date = self.due_date_input.get_date().strftime("%d-%m-%Y")
+        due_time = f"{self.hours_input.get()}:{self.minutes_input.get()}"
         try:
             datetime.strptime(due_date, "%d-%m-%Y")
+            datetime.strptime(due_time, "%H:%M")
         except ValueError:
-            messagebox.showerror("Invalid Date", "The date format should be dd-mm-yyyy.")
+            messagebox.showerror("Invalid Date or Time", "The date format should be dd-mm-yyyy and time format should be HH:MM.")
             return
         
         if task != "Enter your to-do-task here ...":
-            self.task_list.insert(tk.END, f"{task} (Due: {due_date})")
+            self.task_list.insert(tk.END, f"{task} (Due: {due_date} {due_time})")
             self.task_list.itemconfig(tk.END, fg="orange")
             self.task_input.delete(0, tk.END)
             self.save_tasks()
@@ -208,18 +215,21 @@ class MyToDoApp(tk.Tk):
         if task_index:
             task_index = task_index[0]
             old_task = self.task_list.get(task_index)
-            old_task_text = old_task.rsplit(" (Due: ", 1)[0]
-            old_due_date = old_task.rsplit(" (Due: ", 1)[1][:-1]
+            old_task_text, old_due_info = old_task.rsplit(" (Due: ", 1)
+            old_due_date, old_due_time = old_due_info.rsplit(" ", 1)
+            old_due_time = old_due_time[:-1]
             new_task_text = simpledialog.askstring("Edit Task", "Edit your Task", initialvalue=old_task_text)
             new_due_date = simpledialog.askstring("Edit Due Date", "Edit Due Date (dd-mm-yyyy)", initialvalue=old_due_date)
-            if new_task_text and new_due_date:
+            new_due_time = simpledialog.askstring("Edit Due Time", "Edit Due Time (HH:MM)", initialvalue=old_due_time)
+            if new_task_text and new_due_date and new_due_time:
                 try:
                     datetime.strptime(new_due_date, "%d-%m-%Y")
+                    datetime.strptime(new_due_time, "%H:%M")
                 except ValueError:
-                    messagebox.showerror("Invalid Date", "The date format should be dd-mm-yyyy.")
+                    messagebox.showerror("Invalid Date or Time", "The date format should be dd-mm-yyyy and time format should be HH:MM.")
                     return
                 self.task_list.delete(task_index)
-                self.task_list.insert(task_index, f"{new_task_text} (Due: {new_due_date})")
+                self.task_list.insert(task_index, f"{new_task_text} (Due: {new_due_date} {new_due_time})")
                 self.task_list.itemconfig(task_index, fg= "orange")
                 self.save_tasks()
     
@@ -238,10 +248,10 @@ class MyToDoApp(tk.Tk):
     #func load_tasks
     def load_tasks(self):
         cursor = self.conn.cursor()
-        cursor.execute("SELECT text, color, due_date FROM tasks")
+        cursor.execute("SELECT text, color, due_date, due_time FROM tasks")
         rows = cursor.fetchall()
         for row in rows:
-            task_text = f"{row[0]} (Due: {row[2]})"
+            task_text = f"{row[0]} (Due: {row[2]} {row[3]})"
             self.task_list.insert(tk.END, task_text)
             self.task_list.itemconfig(tk.END, fg=row[1])
     
@@ -251,10 +261,11 @@ class MyToDoApp(tk.Tk):
         cursor.execute("DELETE FROM tasks")
         for i in range(self.task_list.size()):
             full_task = self.task_list.get(i)
-            text, due_date = full_task.rsplit(" (Due: ", 1)
-            due_date = due_date[:-1]
+            text, due_info = full_task.rsplit(" (Due: ", 1)
+            due_date, due_time = due_info.split(" ", 1)
+            due_time = due_time[:-1]
             color = self.task_list.itemcget(i, "fg")
-            cursor.execute("INSERT INTO tasks (text, color, due_date) VALUES (?, ?, ?)", (text, color, due_date))
+            cursor.execute("INSERT INTO tasks (text, color, due_date, due_time) VALUES (?, ?, ?, ?)", (text, color, due_date, due_time))
         self.conn.commit()
 
 if __name__ == '__main__':
