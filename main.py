@@ -214,24 +214,63 @@ class MyToDoApp(tk.Tk):
         task_index = self.task_list.curselection()
         if task_index:
             task_index = task_index[0]
-            old_task = self.task_list.get(task_index)
-            old_task_text, old_due_info = old_task.rsplit(" (Due: ", 1)
-            old_due_date, old_due_time = old_due_info.rsplit(" ", 1)
-            old_due_time = old_due_time[:-1]
+            full_task = self.task_list.get(task_index)
+            try:
+                old_task_text, old_due_info = full_task.rsplit(" (Due: ", 1)
+                old_due_date, old_due_time = old_due_info.rsplit(" ", 1)
+                old_due_time = old_due_time[:-1]
+            except:
+                old_task_text = full_task
+                old_due_date = datetime.now().strftimetime("%d-%m-%Y")
+                old_due_time = "00:00"
+
             new_task_text = simpledialog.askstring("Edit Task", "Edit your Task", initialvalue=old_task_text)
-            new_due_date = simpledialog.askstring("Edit Due Date", "Edit Due Date (dd-mm-yyyy)", initialvalue=old_due_date)
-            new_due_time = simpledialog.askstring("Edit Due Time", "Edit Due Time (HH:MM)", initialvalue=old_due_time)
-            if new_task_text and new_due_date and new_due_time:
+            
+            edit_due_date_popup = tk.Toplevel(self)
+            edit_due_date_popup.title("Set your new Due Date")
+            edit_due_date_popup.geometry("300x200")
+
+            due_date_label = ttk.Label(edit_due_date_popup, text="Due Date:", font=("TkDefaultFont", 12))
+            due_date_label.pack(pady=5)
+            new_due_date = DateEntry(edit_due_date_popup, font=("TkDefaultFont", 12), date_pattern="dd-mm-yyyy")
+            new_due_date.set_date(datetime.strptime(old_due_date, "%d-%m-%Y"))
+            new_due_date.pack(pady=5)
+
+            due_time_label = ttk.Label(edit_due_date_popup, text="Due Time:", font=("TkDefaultFont", 12))
+            due_time_label.pack(pady=0)
+
+            new_due_time_frame = ttk.Frame(edit_due_date_popup)
+            new_due_time_frame.pack(pady=5)
+
+            new_hours_input = ttk.Combobox(new_due_time_frame, values=[f"{i:02d}" for i in range(24)], width=3, font=("TkDefaultFont", 12))
+            new_hours_input.set(old_due_time.split(":")[0])
+            new_hours_input.pack(side=tk.LEFT)
+
+            ttk.Label(new_due_time_frame, text=":", font=("TkDefaultFont", 12)).pack(side=tk.LEFT)
+
+            new_minutes_input = ttk.Combobox(new_due_time_frame, values=[f"{i:02d}" for i in range(60)], width=3, font=("TkDefaultFont", 12))
+            new_minutes_input.set(old_due_time.split(":")[1] if len(old_due_time.split(":")) > 1 else "00")
+            new_minutes_input.pack(side=tk.LEFT)
+
+            #func save_edit
+            def save_edit():
+                new_due_date_val = new_due_date.get_date().strftime("%d-%m-%Y")
+                new_due_time_val = f"{new_hours_input.get()}:{new_minutes_input.get()}"
                 try:
-                    datetime.strptime(new_due_date, "%d-%m-%Y")
-                    datetime.strptime(new_due_time, "%H:%M")
+                    datetime.strptime(new_due_date_val, "%d-%m-%Y")
+                    datetime.strptime(new_due_time_val, "%H:%M")
                 except ValueError:
                     messagebox.showerror("Invalid Date or Time", "The date format should be dd-mm-yyyy and time format should be HH:MM.")
                     return
-                self.task_list.delete(task_index)
-                self.task_list.insert(task_index, f"{new_task_text} (Due: {new_due_date} {new_due_time})")
-                self.task_list.itemconfig(task_index, fg= "orange")
-                self.save_tasks()
+                if new_task_text and new_due_date_val and new_due_time_val:
+                    self.task_list.delete(task_index)
+                    self.task_list.insert(task_index, f"{new_task_text} (Due: {new_due_date_val} {new_due_time_val})")
+                    self.task_list.itemconfig(task_index, fg="orange")
+                    self.save_tasks()
+                edit_due_date_popup.destroy()
+
+            save_button = ttk.Button(edit_due_date_popup, text="Save", command=save_edit)
+            save_button.pack(pady=10)
     
     #func clear_placeholder, cleared box when clicked
     def clear_placeholder(self, event):
@@ -261,9 +300,14 @@ class MyToDoApp(tk.Tk):
         cursor.execute("DELETE FROM tasks")
         for i in range(self.task_list.size()):
             full_task = self.task_list.get(i)
-            text, due_info = full_task.rsplit(" (Due: ", 1)
-            due_date, due_time = due_info.split(" ", 1)
-            due_time = due_time[:-1]
+            try:
+                text, due_info = full_task.rsplit(" (Due: ", 1)
+                due_date, due_time = due_info.split(" ", 1)
+                due_time = due_time[:-1]
+            except ValueError:
+                text = full_task
+                due_date = datetime.now().strftime("%d-%m-%Y")
+                due_time = "00:00"
             color = self.task_list.itemcget(i, "fg")
             cursor.execute("INSERT INTO tasks (text, color, due_date, due_time) VALUES (?, ?, ?, ?)", (text, color, due_date, due_time))
         self.conn.commit()
