@@ -23,6 +23,21 @@ class MyToDoApp(tk.Tk):
         self.create_table()
         self.alter_table()
 
+        # app theme
+        self.style = ttk.Style(self)
+        self.style.theme_use('clam')
+        self.style.configure("TLabel", font=("Helvetica", 12))
+        self.style.configure("TButton", font=("Helvetica", 12), padding=6)
+        self.style.configure("TEntry", font=("Helvetica", 12))
+        self.style.configure("TCombobox", font=("Helvetica", 12))
+
+        self.create_widgets()
+
+        self.load_tasks()
+        self.check_reminders()
+    
+    #func create_widget
+    def create_widgets(self):
         # startup window
         startup_window = tk.Toplevel(self)
         startup_window.title("Welcome")
@@ -30,7 +45,7 @@ class MyToDoApp(tk.Tk):
         startup_window.iconbitmap("icon.ico")
 
         # Startup message
-        startup_label = ttk.Label(startup_window, text="Welcome to MyToDo App!", font=("TkDefaultFont", 20))
+        startup_label = ttk.Label(startup_window, text="Welcome to MyToDo App!", font=("Helvetica", 20))
         startup_label.pack(pady=10)
 
         # User notes
@@ -41,16 +56,20 @@ class MyToDoApp(tk.Tk):
             "Click the 'View Stats' button to see task statistics.",
             "Reward yourself with some fun minigames as you finished your tasks!",
             "Note:", 
-            "Once you've done 5 tasks, you can unlock the Car Game. 10 tasks, you can unlock the TeqBall Simulator"
+            "Once you've done 1 task, you can unlock the Car Game. 3 tasks, you can unlock the TeqBall Simulator"
         ]
 
         for note in side_notes:
             note_label = ttk.Label(startup_window, text=note)
             note_label.pack()
 
+        #main frame
+        main_frame = ttk.Frame(self, padding="10")
+        main_frame.pack(fill=tk.BOTH, expand=True)
+
         #input box & placeholder
-        self.task_input = ttk.Entry(self, font=(
-            "TkDefaultFont", 16), width=30, style="Custom.TEntry")
+        self.task_input = ttk.Entry(main_frame, font=(
+            "Helvetica", 16), width=30)
         self.task_input.pack(pady=10)
         self.task_input.insert(0, "Enter your to-do-task here ...")
 
@@ -60,49 +79,51 @@ class MyToDoApp(tk.Tk):
         self.task_input.bind("<FocusOut>", self.restore_placeholder)
         
         #input box date & time due frame
-        date_time_frame = ttk.Frame(self)
+        date_time_frame = ttk.Frame(main_frame)
         date_time_frame.pack(pady=10)
 
-        due_date_label = ttk.Label(date_time_frame, text="Due Date:", font=("TkDefaultFont", 14))
+        due_date_label = ttk.Label(date_time_frame, text="Due Date:", font=("Helvetica", 14))
         due_date_label.grid(row=0, column=0, padx=10)
-        due_time_label = ttk.Label(date_time_frame, text="Due Time:", font=("TkDefaultFont", 14))
+        due_time_label = ttk.Label(date_time_frame, text="Due Time:", font=("Helvetica", 14))
         due_time_label.grid(row=0, column=1, padx=10)
 
-        self.due_date_input = DateEntry(date_time_frame, font=("TkDefaultFont", 12), width=12, background="darkblue", foreground="white", borderwidth=2, date_pattern="dd-mm-yyyy")
+        self.due_date_input = DateEntry(date_time_frame, font=("Helvetica", 12), width=12, background="darkblue", foreground="white", borderwidth=2, date_pattern="dd-mm-yyyy")
         self.due_date_input.grid(row=1, column=0, padx=10)
 
         time_frame = ttk.Frame(date_time_frame)
         time_frame.grid(row=1, column=1, padx=10)
         
-        self.hours_input = ttk.Combobox(time_frame, values=[f"{i:02d}" for i in range(24)], width=3, font=("TkDefaultFont", 12))
+        self.hours_input = ttk.Combobox(time_frame, values=[f"{i:02d}" for i in range(24)], width=3, font=("Helvetica", 12))
         self.hours_input.set("00")
         self.hours_input.pack(side=tk.LEFT)
 
-        ttk.Label(time_frame, text=":", font=("TkDefaultFont", 12)).pack(side=tk.LEFT)
+        ttk.Label(time_frame, text=":", font=("Helvetica", 12)).pack(side=tk.LEFT)
         
-        self.minutes_input = ttk.Combobox(time_frame, values=[f"{i:02d}" for i in range(60)], width=3, font=("TkDefaultFont", 12))
+        self.minutes_input = ttk.Combobox(time_frame, values=[f"{i:02d}" for i in range(60)], width=3, font=("Helvetica", 12))
         self.minutes_input.set("00")
         self.minutes_input.pack(side=tk.LEFT)
         
         #addingtask button
-        ttk.Button(self, text="Add", command=self.add_task).pack(pady=5)
+        ttk.Button(main_frame, text="Add", command=self.add_task).pack(pady=5)
 
         #listbox display added tasks
-        self.task_list = tk.Listbox(self, font=(
-            "TkDefaultFont", 16), height=10, selectmode=tk.BROWSE)
+        self.task_list = tk.Listbox(main_frame, font=(
+            "Helvetica", 16), height=10, selectmode=tk.BROWSE)
         self.task_list.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        #marking tasks as done/deleting/editing button
-        ttk.Button(self, text="Done", style="success.TButton",
-                   command=self.mark_done).pack(side=tk.LEFT, padx=10, pady=10)
-        ttk.Button(self, text="Delete", style="danger.TButton",
-                   command=self.delete_task).pack(side=tk.LEFT, padx=10, pady=10)
-        ttk.Button(self, text="Edit", style="warning.TButton",
-                   command=self.edit_task).pack(side=tk.LEFT, padx=10, pady=10)
-        
-        #task stats display button
-        ttk.Button(self, text="View Stats", style="info.TButton",
-                   command=self.view_stats).pack(side=tk.RIGHT, padx=10, pady=10)
+        #button frame
+        button_frame = ttk.Frame(main_frame)
+        button_frame.pack(pady=10)
+
+        #marking tasks as done/deleting/editing/view stats button
+        ttk.Button(button_frame, text="Done", style="success.TButton",
+                    command=self.mark_done).pack(side=tk.LEFT, padx=10)
+        ttk.Button(button_frame, text="Delete", style="danger.TButton",
+                    command=self.delete_task).pack(side=tk.LEFT, padx=10)
+        ttk.Button(button_frame, text="Edit", style="warning.TButton",
+                    command=self.edit_task).pack(side=tk.LEFT, padx=10)
+        ttk.Button(button_frame, text="View Stats", style="info.TButton",
+                    command=self.view_stats).pack(side=tk.RIGHT, padx=10)
         
         #create menu bar
         menubar = tk.Menu(self)
@@ -116,11 +137,7 @@ class MyToDoApp(tk.Tk):
         app_menu.add_command(label="Race Car", command=self.game1__init__)
         app_menu.add_command(label="TeqBall Simulator", command=self.game2__init__)
         app_menu.add_separator()
-        app_menu.add_command(label="Exit", command=self.quit)
-        
-
-        self.load_tasks()
-        self.check_reminders()
+        app_menu.add_command(label="Exit", command=self.quit)     
     
     #func create_table
     def create_table(self):
@@ -131,7 +148,7 @@ class MyToDoApp(tk.Tk):
                 text TEXT,
                 color TEXT,
                 due_date TEXT,
-                due_time
+                due_time TEXT
             )
         ''')
         self.conn.commit()
@@ -156,25 +173,24 @@ class MyToDoApp(tk.Tk):
     #func game1__init__
     def game1__init__(self):
         done_count = sum(1 for i in range(self.task_list.size()) if self.task_list.itemcget(i, "fg") == "green")
-        if done_count >= 5:
-            subprocess.Popen(["python",game1_path])
+        if done_count >= 1:
+            subprocess.Popen(["python", game1_path])
         else:
-            messagebox.showinfo("Alert","You have to finish minimum of 5 tasks to unlock this game!")
+            messagebox.showinfo("Alert", "You have to finish minimum of 1 task to unlock this game!")
         #when done tasks >=5 can play game 
     
     #func game2__init__
     def game2__init__(self):
         done_count = sum(1 for i in range(self.task_list.size()) if self.task_list.itemcget(i, "fg") == "green")
-        if done_count >= 10:
-            subprocess.Popen(["python",game2_path])
+        if done_count >= 3:
+            subprocess.Popen(["python", game2_path])
         else:
-            messagebox.showinfo("Alert","You have to finish minimum of 10 tasks to unlock this game!")
+            messagebox.showinfo("Alert", "You have to finish minimum of 3 tasks to unlock this game!")
         #will be added once game 2 finished
         
-
-    #func view_stats using json file
+    #func view_stats
     def view_stats(self):
-        done_count = sum(1 for i in range(self.task_list.size()) if self.task_list.itemcget(i,"fg")=="green")
+        done_count = sum(1 for i in range(self.task_list.size()) if self.task_list.itemcget(i, "fg") == "green")
         total_count = self.task_list.size()
         messagebox.showinfo("Task Statistics", f"Total tasks: {total_count}\nCompleted tasks: {done_count}")
 
@@ -189,7 +205,7 @@ class MyToDoApp(tk.Tk):
         except ValueError:
             messagebox.showerror("Invalid Date or Time", "The date format should be dd-mm-yyyy and time format should be HH:MM.")
             return
-        
+
         if task != "Enter your to-do-task here ...":
             self.task_list.insert(tk.END, f"{task} (Due: {due_date} {due_time})")
             self.task_list.itemconfig(tk.END, fg="orange")
@@ -277,23 +293,23 @@ class MyToDoApp(tk.Tk):
     def clear_placeholder(self, event):
         if self.task_input.get() == "Enter your to-do-task here ...":
             self.task_input.delete(0, tk.END)
-            self.task_input.configure(style="TEntry")
+            self.task_input.config(foreground='black')
 
     #func restore_placeholder, restore box to inital when put blank
     def restore_placeholder(self, event):
-        if self.task_input.get() == "":
+        if not self.task_input.get():
             self.task_input.insert(0, "Enter your to-do-task here ...")
-            self.task_input.configure(style="Custom.TEntry")
+            self.task_input.config(foreground='grey')
 
     #func load_tasks
     def load_tasks(self):
         cursor = self.conn.cursor()
         cursor.execute("SELECT text, color, due_date, due_time FROM tasks")
-        rows = cursor.fetchall()
-        for row in rows:
-            task_text = f"{row[0]} (Due: {row[2]} {row[3]})"
-            self.task_list.insert(tk.END, task_text)
-            self.task_list.itemconfig(tk.END, fg=row[1])
+        tasks = cursor.fetchall()
+        for task in tasks:
+            task_text, color, due_date, due_time = task
+            self.task_list.insert(tk.END, f"{task_text} (Due: {due_date} {due_time})")
+            self.task_list.itemconfig(tk.END, fg=color)
     
     #func save_tasks, saves task into tasks.json
     def save_tasks(self):
