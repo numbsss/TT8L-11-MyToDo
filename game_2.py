@@ -65,14 +65,6 @@ def game_over_screen():
     pygame.display.flip()
     wait_for_key()
 
-def victory_screen():
-    screen.fill(BLACK)
-    show_text_on_screen("Congratulations!", 50, HEIGHT // 3)
-    show_text_on_screen(f"You've won with a score of {score}", 30, HEIGHT // 2)
-    show_text_on_screen("Press any key to exit...", 20, HEIGHT * 2 // 3)
-    pygame.display.flip()
-    wait_for_key()
-
 def change_platform_color():
     return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
@@ -86,70 +78,60 @@ while game_running:
 
     keys = pygame.key.get_pressed() 
 
+    # Only consider horizontal arrow key inputs
     platform_pos[0] += (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * platform_speed
-    platform_pos[1] += (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * platform_speed
 
+    # Ensure the platform stays within the screen horizontally
     platform_pos[0] = max(0, min(platform_pos[0], WIDTH - PLATFORM_WIDTH))
-    platform_pos[1] = max(0, min(platform_pos[1], HEIGHT - PLATFORM_HEIGHT))
 
     ball_pos[0] += ball_speed[0]
     ball_pos[1] += ball_speed[1]
 
-    if ball_pos[0] <= 0 or ball_pos[0] >= WIDTH:
+    if ball_pos[0] <= BALL_RADIUS or ball_pos[0] >= WIDTH - BALL_RADIUS:
         ball_speed[0] = -ball_speed[0]
 
-    if ball_pos[1] <= 0 :
+    if ball_pos[1] <= BALL_RADIUS:
         ball_speed[1] = -ball_speed[1]
 
-    if (
-        platform_pos[0] <= ball_pos[0] <= platform_pos[0] + PLATFORM_WIDTH
-        and platform_pos[1] <= ball_pos[1] <= platform_pos[1] + PLATFORM_HEIGHT
-    ):
-        ball_speed[1] = -ball_speed[1]
-        score += 1       
-    if score >= current_level * 10:
-        current_level += 1
-        ball_pos = [WIDTH // 2, HEIGHT // 2]
-        ball_speed = [random.uniform(2, 4), random.uniform(2, 4)]  # Randomize the ball speed
-        platform_color = change_platform_color()
+    if ball_pos[1] >= HEIGHT - BALL_RADIUS:
+        lives -= 1
+        if lives == 0:
+            game_over_screen()
+            start_screen()
+            score = 0
+            lives = 3
+            current_level = 1
+        ball_pos = [WIDTH // 2, HEIGHT // 2]               
+        ball_speed = [random.uniform(2, 4), random.uniform(2, 4)]
 
-        if ball_pos[1] >= HEIGHT:
-        
-            lives -= 1
-            if lives == 0:
-                game_over_screen()
-                start_screen()  
-                score = 0
-                lives = 3
-                current_level = 1
-            else:
-                
-                ball_pos = [WIDTH // 2, HEIGHT // 2]
-                
-                ball_speed = [random.uniform(2, 4), random.uniform(2, 4)]
+    if (platform_pos[0] <= ball_pos[0] <= platform_pos[0] + PLATFORM_WIDTH
+        and platform_pos[1] <= ball_pos[1] + BALL_RADIUS <= platform_pos[1] + PLATFORM_HEIGHT):
+        ball_speed[1] = -ball_speed[1]
+        score += 1
+        if score >= current_level * 10:
+            current_level += 1
+            platform_color = change_platform_color()
 
     screen.fill(BLACK)
     pygame.draw.circle(screen, WHITE, (int(ball_pos[0]), int(ball_pos[1])), BALL_RADIUS)
     pygame.draw.rect(screen, platform_color, (int(platform_pos[0]), int(platform_pos[1]), PLATFORM_WIDTH, PLATFORM_HEIGHT))
-    info_line_y = 10
-    info_spacing = 75     
 
     score_text = font.render(f"Score: {score}", True, WHITE)
-    score_rect = score_text.get_rect(topleft=(10, info_line_y))
+    score_rect = score_text.get_rect(topleft=(10, 10))
     pygame.draw.rect(screen, ORANGE, score_rect.inflate(10, 5))
     screen.blit(score_text, score_rect)
 
     level_text = font.render(f"Level: {current_level}", True, WHITE)
-    level_rect = level_text.get_rect(topleft=(score_rect.topright[0] + info_spacing, info_line_y))
+    level_rect = level_text.get_rect(topleft=(score_rect.topright[0] + 75, 10))
     pygame.draw.rect(screen, LIGHT_BLUE, level_rect.inflate(10, 5))
     screen.blit(level_text, level_rect)
     
     lives_text = font.render(f"Lives: {lives}", True, WHITE)
-    lives_rect = lives_text.get_rect(topleft=(level_rect.topright[0] + info_spacing, info_line_y))
+    lives_rect = lives_text.get_rect(topleft=(level_rect.topright[0] + 75, 10))
     pygame.draw.rect(screen, RED, lives_rect.inflate(10, 5))
     screen.blit(lives_text, lives_rect)
 
     pygame.display.flip()
     clock.tick(FPS)
+
 pygame.quit()
-           
