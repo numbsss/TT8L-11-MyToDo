@@ -3,7 +3,7 @@ from tkinter import ttk, messagebox, simpledialog
 import sqlite3
 import subprocess
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from tkcalendar import DateEntry
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -120,6 +120,7 @@ class MyToDoApp(tk.Tk):
         
 
         self.load_tasks()
+        self.check_reminders()
     
     #func create_table
     def create_table(self):
@@ -237,7 +238,7 @@ class MyToDoApp(tk.Tk):
             new_due_date.pack(pady=5)
 
             due_time_label = ttk.Label(edit_due_date_popup, text="Due Time:", font=("TkDefaultFont", 12))
-            due_time_label.pack(pady=0)
+            due_time_label.pack(pady=5)
 
             new_due_time_frame = ttk.Frame(edit_due_date_popup)
             new_due_time_frame.pack(pady=5)
@@ -311,6 +312,38 @@ class MyToDoApp(tk.Tk):
             color = self.task_list.itemcget(i, "fg")
             cursor.execute("INSERT INTO tasks (text, color, due_date, due_time) VALUES (?, ?, ?, ?)", (text, color, due_date, due_time))
         self.conn.commit()
+    
+    #func check_reminders, remind upcoming current tasks when app launched
+    def check_reminders(self):
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT text, color, due_date, due_time FROM tasks WHERE color = 'orange'")
+        rows = cursor.fetchall()
+        for row in rows:
+            due_datetime_str = f"{row[2]} {row[3]}"
+            due_datetime = datetime.strptime(due_datetime_str, "%d-%m-%Y %H:%M")
+            now = datetime.now()
+            time_difference = due_datetime - now
+            
+            if time_difference.total_seconds() < 0:
+                message = f"Task '{row[0]}' is past due!"
+            else:
+                days_until_due = time_difference.days
+                hours_until_due = time_difference.seconds // 3600
+                minutes_until_due = (time_difference.seconds % 3600) // 60
+                
+                if days_until_due == 0:
+                    if hours_until_due > 0 or minutes_until_due > 0:
+                        message = f"Task '{row[0]}' is due in {hours_until_due} hours and {minutes_until_due} minutes!"
+                    else:
+                        message = f"Task '{row[0]}' is due very soon!"
+                elif days_until_due == 1:
+                    message = f"Task '{row[0]}' is due in 1 day!"
+                else:
+                    message = f"Task '{row[0]}' is due in {days_until_due} days and {hours_until_due} hours!"
+            
+            messagebox.showinfo("Task Reminder", message)
+
+        self.after(3600000, self.check_reminders)
 
 if __name__ == '__main__':
     app = MyToDoApp()
